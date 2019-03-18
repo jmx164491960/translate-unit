@@ -19,6 +19,7 @@
   "homepage": "https://github.com/jmx164491960/translate-util#readme",
   "dependencies": {
     "axios": "^0.18.0",
+    "fse": "^4.0.1",
     "request": "^2.88.0"
   }
 }

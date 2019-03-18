@@ -1,5 +1,6 @@
 const axios = require('axios');
 const fs = require('fs');
+const { getFileByPath } = require('./utils');
 
 // 得到一个驼峰的key值
 const getKeyByWord = function(word) {
@@ -57,32 +58,47 @@ function parseText(pendingText, reg){
     return collection;
 }
 
-fs.readFile('src/App.vue', 'utf8', (err, data) => {
+function search(path) {
+    let data = fs.readFileSync(path, 'utf8');
+    // (err, data) => {
+    //     const reg1 = /<script>[\d\D]*<\/script>/g;
+    //     const reg2 = /[\u4e00-\u9fa5]+/g;
+    //     if(err) {
+    //         console.log('err:', err);
+    //     } else {
+    //         const code =  data.match(reg1).join('');
+            
+    //         const chinese = parseText(code, reg2);
+    
+    //         console.log('chinese:', code, chinese);
+    //     }
+    // });
     const reg1 = /<script>[\d\D]*<\/script>/g;
     const reg2 = /[\u4e00-\u9fa5]+/g;
-    if(err) {
-        console.log('err:', err);
-    } else {
-        const code =  data.match(reg1).join('');
-        
-        const chinese = parseText(code, reg2);
+    console.log('data:', data);
+    const code =  data.match(reg1).join('');
+    console.log('code:', code);
+    // return parseText(code, reg2);
+    return code.match(reg2);
+}
 
-        console.log('chinese:', code, chinese);
-    }
-});
-
-// fs.readFile('src/input.js', 'utf8', function(err, data){
-//     const reg = /[^\s]+/g;
-//     let wordArr = data.match(reg);
-//     let taskList = wordArr.map((item) => {
-//         return translateRequest({
-//             word: item
-//         });
-//     });
-//     Promise.all(taskList).then((arr) => {
-//         const length = arr.length;
-//         fs.writeFile('src/output.js', JSON.stringify(arr, null, length), function(err){
-//             if (!err) console.log('写入成功');
-//         });
-//     });
-// });
+function main() {
+    const pathArr = getFileByPath('src/APP').filter((path) => {
+        return !/\.json$/.test(path);
+    });
+    
+    pathArr.forEach((path) => {
+        let words = search(path);
+        let prodPath = path.replace(/\.[^\.]+/, '.json');
+        console.log('words:', words);
+        let list = words.map((word) => {
+            return translateRequest({word});
+        });
+        Promise.all(list).then((arr) => {
+            fs.writeFile(prodPath, JSON.stringify(arr, null, arr.length), (err) => {
+                if (!err) console.log(prodPath + '写入成功!');
+            })
+        });
+    });
+}
+main();
