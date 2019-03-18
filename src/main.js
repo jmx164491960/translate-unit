@@ -33,18 +33,56 @@ const translateRequest = function(obj) {
     });
 };
 
-fs.readFile('src/input.js', 'utf8', function(err, data){
-    const reg = /[^\s]+/g;
-    let wordArr = data.match(reg);
-    let taskList = wordArr.map((item) => {
-        return translateRequest({
-            word: item
-        });
-    });
-    Promise.all(taskList).then((arr) => {
-        const length = arr.length;
-        fs.writeFile('src/output.js', JSON.stringify(arr, null, length), function(err){
-            if (!err) console.log('写入成功');
-        });
-    });
+function parseText(pendingText, reg){
+    var collection=[];
+    var searchTxt="";
+    var targetTxt = "";
+    var stringLength=0,lastIndex=0,curIndex=0;
+    // var reg =/\{\{(.+?)\}\}/g;
+    
+    if(!reg.test(pendingText)){
+        throw new Error("未匹配");
+    }else{
+        reg.lastIndex=0;
+        while( tempR = reg.exec(pendingText))
+        {
+            curIndex = reg.lastIndex;
+            searchTxt=tempR[0];
+            stringLength=searchTxt.length;
+            collection.push(pendingText.slice(lastIndex,curIndex-stringLength));
+            collection.push(searchTxt);
+            lastIndex=curIndex;
+        }
+    }
+    return collection;
+}
+
+fs.readFile('src/App.vue', 'utf8', (err, data) => {
+    const reg1 = /<script>[\d\D]*<\/script>/g;
+    const reg2 = /[\u4e00-\u9fa5]+/g;
+    if(err) {
+        console.log('err:', err);
+    } else {
+        const code =  data.match(reg1).join('');
+        
+        const chinese = parseText(code, reg2);
+
+        console.log('chinese:', code, chinese);
+    }
 });
+
+// fs.readFile('src/input.js', 'utf8', function(err, data){
+//     const reg = /[^\s]+/g;
+//     let wordArr = data.match(reg);
+//     let taskList = wordArr.map((item) => {
+//         return translateRequest({
+//             word: item
+//         });
+//     });
+//     Promise.all(taskList).then((arr) => {
+//         const length = arr.length;
+//         fs.writeFile('src/output.js', JSON.stringify(arr, null, length), function(err){
+//             if (!err) console.log('写入成功');
+//         });
+//     });
+// });
