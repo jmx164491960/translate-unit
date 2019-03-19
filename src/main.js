@@ -76,20 +76,31 @@ function main() {
         return !/\.json$/.test(path);
     });
     
+    let promiseList = [];
     pathArr.forEach((path) => {
         let words = search(path);
-        console.log('words:', words);
-        return;
+        // console.log('words:', words);
         let prodPath = path.replace(/\.[^\.]+/, '.json');
         console.log('words:', words);
         let list = words.map((word) => {
             return translateRequest({word});
         });
-        Promise.all(list).then((arr) => {
-            fs.writeFile(prodPath, JSON.stringify(arr, null, arr.length), (err) => {
-                if (!err) console.log(prodPath + '写入成功!');
-            })
+        // 把一个文件检索到的中文，输出到对应xx.json
+        const promise = Promise.all(list).then((arr) => {
+            return new Promise((resolve) => {
+                fs.writeFile(prodPath, JSON.stringify(arr, null, arr.length), (err) => {
+                    if (!err) {
+                        resolve();
+                        console.log(prodPath + '写入成功!');
+                    }
+                });
+            });
         });
+        promiseList.push(promise);
+    });
+    // 所有的任务完成
+    Promise.all(promiseList).then(() => {
+        console.log('大功告成!');
     });
 }
 main();
