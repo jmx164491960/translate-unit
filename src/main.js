@@ -60,25 +60,11 @@ function parseText(pendingText, reg){
 
 function search(path) {
     let data = fs.readFileSync(path, 'utf8');
-    // (err, data) => {
-    //     const reg1 = /<script>[\d\D]*<\/script>/g;
-    //     const reg2 = /[\u4e00-\u9fa5]+/g;
-    //     if(err) {
-    //         console.log('err:', err);
-    //     } else {
-    //         const code =  data.match(reg1).join('');
-            
-    //         const chinese = parseText(code, reg2);
-    
-    //         console.log('chinese:', code, chinese);
-    //     }
-    // });
     const reg1 = /<script>[\d\D]*<\/script>/g;
     const reg2 = /[\u4e00-\u9fa5]+/g;
     console.log('data:', data);
     const code =  data.match(reg1).join('');
     console.log('code:', code);
-    // return parseText(code, reg2);
     return code.match(reg2);
 }
 
