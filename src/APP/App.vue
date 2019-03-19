@@ -27,6 +27,10 @@ export default {
 
     alert('我是一个弹窗'); // 我是一个注释
 
+    /* 我也是一个注释 */
+    /**
+     * 我是一个特别的注释
+     */
     Vue.use(() => {
       Vue.prototype.$Hello = Hello;
     });

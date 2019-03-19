@@ -60,11 +60,14 @@ function parseText(pendingText, reg){
 
 function search(path) {
     let data = fs.readFileSync(path, 'utf8');
-    const reg1 = /<script>[\d\D]*<\/script>/g;
+    // const reg1 = /<script>[\d\D]*<\/script>/g;
     const reg2 = /[\u4e00-\u9fa5]+/g;
-    console.log('data:', data);
-    const code =  data.match(reg1).join('');
-    console.log('code:', code);
+    const reg3 = /(\/\/.*)|(\/\*[\s\S]*?\*\/)|(<!--[\s\S]*?-->)/g;
+    // console.log('data:', data);
+    // 过滤注释代码
+    const code =  data.replace(reg3, '');
+    // console.log('code:', code);
+    // 获取中文
     return code.match(reg2);
 }
 
@@ -75,6 +78,8 @@ function main() {
     
     pathArr.forEach((path) => {
         let words = search(path);
+        console.log('words:', words);
+        return;
         let prodPath = path.replace(/\.[^\.]+/, '.json');
         console.log('words:', words);
         let list = words.map((word) => {
