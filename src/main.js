@@ -25,7 +25,7 @@ const translateRequest = function(obj) {
         url: url
 	}).then((res) => {
         return {
-            cn: obj.word,
+            zh: obj.word,
             en: res.data.sentences[0].trans,
             key: getKeyByWord(res.data.sentences[0].trans)
         };
