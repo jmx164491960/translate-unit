@@ -24,7 +24,7 @@ const translateRequest = function(obj) {
         url: url
 	}).then((res) => {
         return {
-            cn: obj.word,
+            zh: obj.word,
             en: res.data.sentences[0].trans,
             key: getKeyByWord(res.data.sentences[0].trans)
         };
@@ -43,7 +43,7 @@ fs.readFile('src/input.js', 'utf8', function(err, data){
     });
     Promise.all(taskList).then((arr) => {
         const length = arr.length;
-        fs.writeFile('src/output.js', JSON.stringify(arr, null, length), function(err){
+        fs.writeFile('src/output.json', JSON.stringify(arr, null, length), function(err){
             if (!err) console.log('写入成功');
         });
     });
