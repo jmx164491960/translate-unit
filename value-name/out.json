@@ -1,0 +1,233 @@
+[
+          {
+                    "label": "toCheck",
+                    "value": "0",
+                    "zh": "待检查",
+                    "translateKey": "toCheck",
+                    "en": "To be checked"
+          },
+          {
+                    "label": "unconfirmed",
+                    "value": "1",
+                    "zh": "未确认",
+                    "translateKey": "unconfirmed",
+                    "en": "unconfirmed"
+          },
+          {
+                    "label": "confirmed",
+                    "value": "3",
+                    "zh": "已确认",
+                    "translateKey": "confirmed",
+                    "en": "confirmed"
+          },
+          {
+                    "label": "consigned",
+                    "value": "4",
+                    "zh": "已交寄",
+                    "translateKey": "consigned",
+                    "en": "Delivered"
+          },
+          {
+                    "label": "received",
+                    "value": "5",
+                    "zh": "已收货",
+                    "translateKey": "received",
+                    "en": "received"
+          },
+          {
+                    "label": "delivered",
+                    "value": "6",
+                    "zh": "已发货",
+                    "translateKey": "delivered",
+                    "en": "Shipped"
+          },
+          {
+                    "label": "deleted",
+                    "value": "9",
+                    "zh": "删除",
+                    "translateKey": "deleted",
+                    "en": "delete"
+          },
+          {
+                    "label": "stockout",
+                    "value": "10",
+                    "zh": "缺货",
+                    "translateKey": "stockout",
+                    "en": "out of stock"
+          },
+          {
+                    "label": "contactCustomer",
+                    "value": "11",
+                    "zh": "联系客户",
+                    "translateKey": "contactCustomer",
+                    "en": "contact clients"
+          },
+          {
+                    "label": "inProcess",
+                    "value": "12",
+                    "zh": "库存校验通过",
+                    "translateKey": "inProcess",
+                    "en": "Inventory verification"
+          },
+          {
+                    "label": "cancelOrder",
+                    "value": "13",
+                    "zh": "取消订单",
+                    "translateKey": "cancelOrder",
+                    "en": "cancel order"
+          },
+          {
+                    "label": "buyerComplain",
+                    "value": "14",
+                    "zh": "买家投诉",
+                    "translateKey": "buyerComplain",
+                    "en": "Buyer complaint"
+          },
+          {
+                    "label": "applyIntercept",
+                    "value": "15",
+                    "zh": "申请拦截",
+                    "translateKey": "applyIntercept",
+                    "en": "Apply for interception"
+          },
+          {
+                    "label": "returned",
+                    "value": "16",
+                    "zh": "已退回",
+                    "translateKey": "returned",
+                    "en": "Returned"
+          },
+          {
+                    "label": "problemCondition",
+                    "value": "17",
+                    "zh": "问题货件",
+                    "translateKey": "problemCondition",
+                    "en": "Problem shipment"
+          },
+          {
+                    "label": "intercepted",
+                    "value": "18",
+                    "zh": "已拦截",
+                    "translateKey": "intercepted",
+                    "en": "Blocked"
+          },
+          {
+                    "label": "inProduct",
+                    "value": "19",
+                    "zh": "生产中",
+                    "translateKey": "inProduct",
+                    "en": "in production"
+          },
+          {
+                    "label": "merged",
+                    "value": "20",
+                    "zh": "已合并",
+                    "translateKey": "merged",
+                    "en": "Merged"
+          },
+          {
+                    "label": "lock",
+                    "value": "21",
+                    "zh": "锁定",
+                    "translateKey": "lock",
+                    "en": "locking"
+          },
+          {
+                    "label": "inBack",
+                    "value": "22",
+                    "zh": "退回中",
+                    "translateKey": "inBack",
+                    "en": "Returned"
+          },
+          {
+                    "label": "websiteToAudit",
+                    "value": "23",
+                    "zh": "网站待审核",
+                    "translateKey": "websiteToAudit",
+                    "en": "Website pending review"
+          },
+          {
+                    "label": "toMatch",
+                    "value": "25",
+                    "zh": "待匹配",
+                    "translateKey": "toMatch",
+                    "en": "To be matched"
+          },
+          {
+                    "label": "wholesaleToDelivery",
+                    "value": "26",
+                    "zh": "批发待发货",
+                    "translateKey": "wholesaleToDelivery",
+                    "en": "Wholesale to be shipped"
+          },
+          {
+                    "label": "toConfirm",
+                    "value": "27",
+                    "zh": "待确认",
+                    "translateKey": "toConfirm",
+                    "en": "to be confirmed"
+          },
+          {
+                    "label": "wholesaleToAudit",
+                    "value": "28",
+                    "zh": "批发待审核",
+                    "translateKey": "wholesaleToAudit",
+                    "en": "Wholesale pending review"
+          },
+          {
+                    "label": "consignProblemOrder",
+                    "value": "29",
+                    "zh": "交寄问题订单",
+                    "translateKey": "consignProblemOrder",
+                    "en": "Submit a problem order"
+          },
+          {
+                    "label": "tempInProgress",
+                    "value": "33",
+                    "zh": "处理中(临时)",
+                    "translateKey": "tempInProgress",
+                    "en": "Processing (temporary)"
+          },
+          {
+                    "label": "splitOrder",
+                    "value": "34",
+                    "zh": "已拆单",
+                    "translateKey": "splitOrder",
+                    "en": "Disassembled"
+          },
+          {
+                    "label": "financialAudit",
+                    "value": "35",
+                    "zh": "财务待审核",
+                    "translateKey": "financialAudit",
+                    "en": "Financial pending review"
+          },
+          {
+                    "label": "outbound",
+                    "value": "36",
+                    "zh": "已出库",
+                    "translateKey": "outbound",
+                    "en": "Out of stock"
+          },
+          {
+                    "label": "signed",
+                    "value": "37",
+                    "zh": "已签收",
+                    "translateKey": "signed",
+                    "en": "Have been received"
+          },
+          {
+                    "label": "refuseToSign",
+                    "value": "38",
+                    "zh": "拒绝签收",
+                    "translateKey": "refuseToSign",
+                    "en": "Refuse to sign"
+          },
+          {
+                    "label": "preFinish",
+                    "value": "39",
+                    "zh": "预处理完成",
+                    "translateKey": "preFinish",
+                    "en": "Pre-processing completed"
+          }
+]
