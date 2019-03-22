@@ -50,3 +50,15 @@ exports.getFileByPath = function(p) {
   }
   return arr;
 }
+
+exports.writeFile = function(path, data) {
+  return new Promise((resolve, reject) => {
+    fs.writeFile(path, data, (err) => {
+      if (!err) {
+        resolve();
+      } else {
+        reject()
+      }
+    });
+  });
+}
