@@ -61,7 +61,7 @@ function parseText(pendingText, reg){
 function search(path) {
     let data = fs.readFileSync(path, 'utf8');
     // const reg1 = /<script>[\d\D]*<\/script>/g;
-    const reg2 = /[\u4e00-\u9fa5]+/g;
+    const reg2 = /[^']+[\u4e00-\u9fa5]+[^']+/g; // 获取中文
     const reg3 = /(\/\/.*)|(\/\*[\s\S]*?\*\/)|(<!--[\s\S]*?-->)/g;
     // console.log('data:', data);
     // 过滤注释代码
