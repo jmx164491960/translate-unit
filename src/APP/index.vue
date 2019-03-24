@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="'转FBA发货'"
+  <el-dialog :title="lang('key')"
     v-dialog-drag
     :visible="visible"
     
@@ -10,7 +10,7 @@
         style="width: 100%">
         <el-table-column
           prop="date"
-          :label="'SKU/POA属性'"
+          :label="lang('key')"
           width="180">
           <template slot-scope="scope">
             <div>{{ scope.row.POA }}</div>
@@ -20,7 +20,7 @@
         </el-table-column>
         <el-table-column
           prop="name"
-          :label="'FBA标签'"
+          :label="lang('key')"
           width="180">
           <template slot-scope="scope">
             <el-input type="text" v-model="scope.row.label"></el-input>
@@ -82,7 +82,7 @@ export default {
       if (this.tableData.some(item => !item.label || item.label == '')) {
         this.$message({
           type: 'warn',
-          message: lang('key')
+          message: this.lang('key')
         });
         return;
       }
@@ -98,13 +98,9 @@ export default {
       setFBAorderAction(data).then(() => {
         this.$message({
           type: 'success',
-          message: lang('key')
+          message: this.lang('key')
         });
       }).catch((err) => {
-        
-        
-        
-        
       });
     }
   },
@@ -114,7 +110,7 @@ export default {
     }
   }
 }
-</script
+</script>
 
 <style lang="scss" scoped>
-</style>
+</style>
