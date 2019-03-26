@@ -44,6 +44,8 @@ const mockRequest = function(obj) {
  */
 let translateCache = {};
 let promiseCount = 0;
+let promisePool = [];
+let requestCount = 0;
 const translateRequest = function(obj) {
     // debug
     // return new Promise((resolve, reject) => {
@@ -54,49 +56,74 @@ const translateRequest = function(obj) {
     //     });
     // });
 
-    // 检查缓存
-    if (translateCache[obj.word]) {
-        console.log('cache-match');
-        return Promise.resolve(translateCache[obj.word]);
-    }
-
     let url = 'http://translate.google.cn/translate_a/single?client=gtx&dt=t&dj=1&ie=UTF-8&sl=auto&tl=en&q=' + encodeURI(obj.word);
     
-    let requestCount = 0;
     const requestHandler = () => {
-        const request = axios({
-            method: 'GET',
-            url: url
-        }).then((res) => {
-            console.log('requestCount:', requestCount);
-            const translateRes = {
-                zh: obj.word,
-                en: res.data.sentences[0].trans,
-                key: getKeyByWord(res.data.sentences[0].trans)
-            };
-            translateCache[obj.word] = translateRes;
-            return translateRes;
-        }).catch((err) => {
-            console.log('err:', err);
-        });
-        return request;
+        // 检查缓存
+        if (translateCache[obj.word]) {
+            console.log('cache-match');
+            return Promise.resolve(translateCache[obj.word]);
+        } else {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    requestCount ++;
+                    console.log('请求次数...', requestCount);
+                    resolve();
+                }, CONFIG.time);
+            }).then(() => {
+                const request = axios({
+                    method: 'GET',
+                    url: url
+                }).then((res) => {
+                    const translateRes = {
+                        zh: obj.word,
+                        en: res.data.sentences[0].trans,
+                        key: getKeyByWord(res.data.sentences[0].trans)
+                    };
+                    translateCache[obj.word] = translateRes;
+                    return translateRes;
+                }).catch((err) => {
+                    console.log('err:', err);
+                });
+                return request;
+            });
+        }
+
+        // return new Promise((resolve, reject) => {
+        //     setTimeout(() => {
+        //         requestCount ++;
+        //         console.log(requestCount);
+        //         resolve({
+        //             zh: obj.word,
+        //             en: '英文',
+        //             key: 'key'
+        //         });
+        //     }, CONFIG.time);
+        // });
     }
 
-    if (promiseCount > 0) {
-        return new Promise((resolve) => {
-            promiseCount ++;
-            const timeout = 2000 * promiseCount;
-            setTimeout(() => {
-                resolve();
-            }, timeout);
-        }).then(() => {
-            if (translateCache[obj.word]) {
-                return Promise.resolve(translateCache[obj.word]);
-            }
+    if (promisePool.length > 0) {
+        const request = Promise.all([...promisePool]).then(() => {
             return requestHandler();
-        })
+        });
+        promisePool.push(request);
+        return request;
+        // return new Promise((resolve) => {
+        //     promiseCount ++;
+        //     const timeout = CONFIG.time * promiseCount;
+        //     setTimeout(() => {
+        //         resolve();
+        //     }, timeout);
+        // }).then(() => {
+        //     if (translateCache[obj.word]) {
+        //         return Promise.resolve(translateCache[obj.word]);
+        //     }
+        //     return requestHandler();
+        // })
     } else {
-        return requestHandler();
+        const request = requestHandler();
+        promisePool.push(request)
+        return request;
     }
 
     // return axios({
