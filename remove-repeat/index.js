@@ -2,6 +2,21 @@ const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
 
+function removeRepeat(arr) {
+  let valueArr = [];
+  let jsonArr = [];
+  arr.forEach((item) => {
+    const json = JSON.stringify(item);
+    // 没有重复的
+    if (jsonArr.indexOf(json) < 0) {
+      jsonArr.push(json);
+      valueArr.push(item);
+    }
+  });
+
+  return valueArr;
+}
+
 function main(path, proPath) {
   const code = fs.readFileSync(path, 'utf-8');
   console.log('code:', code);
