@@ -10,7 +10,10 @@ const CONFIG = require('./config');
  * @param { String } word 
  */
 const getKeyByWord = function(word) {
-    const reg = /[^ ]+/g;
+    const reg = /[^ ]+/g; // 去空格
+    // 去标点符号
+    const symbolReg = /[\ |\~|\`|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\-|\_|\+|\=|\||\\|\[|\]|\{|\}|\;|\:|\"|\'|\,|\<|\.|\>|\/|\?\u3002|\uff1f|\uff01|\uff0c|\u3001|\uff1b|\uff1a|\u201c|\u201d|\u2018|\u2019|\uff08|\uff09|\u300a|\u300b|\u3008|\u3009|\u3010|\u3011|\u300e|\u300f|\u300c|\u300d|\ufe43|\ufe44|\u3014|\u3015|\u2026|\u2014|\uff5e|\ufe4f|\uffe5]/g;
+    word = word.replace(symbolReg, '');
     const arr = word.match(reg);
     let result = '';
     arr.forEach((item, index) => {
@@ -23,10 +26,24 @@ const getKeyByWord = function(word) {
     return result;
 };
 
+let count = 0;
+const mockRequest = function(obj) {
+    count ++;
+    console.log('count:', count);
+    return new Promise((resolve, reject) => {
+        resolve({
+            zh: obj.word,
+            en: '英文',
+            key: 'key'
+        });
+    });
+}
+
 /**
  * 翻译请求函数
  */
 let translateCache = {};
+let promiseCount = 0;
 const translateRequest = function(obj) {
     // debug
     // return new Promise((resolve, reject) => {
@@ -39,33 +56,62 @@ const translateRequest = function(obj) {
 
     // 检查缓存
     if (translateCache[obj.word]) {
+        console.log('cache-match');
         return Promise.resolve(translateCache[obj.word]);
     }
 
     let url = 'http://translate.google.cn/translate_a/single?client=gtx&dt=t&dj=1&ie=UTF-8&sl=auto&tl=en&q=' + encodeURI(obj.word);
-	return axios({
-        method: 'GET',
-        url: url
-	}).then((res) => {
-        return {
-            zh: obj.word,
-            en: res.data.sentences[0].trans,
-            key: getKeyByWord(res.data.sentences[0].trans)
-        };
-	}).catch((err) => {
-        console.log('err:', err);
-    });
-};
-
-const mockRequest = function(obj) {
-    return new Promise((resolve, reject) => {
-        resolve({
-            zh: obj.word,
-            en: '英文',
-            key: 'key'
+    
+    let requestCount = 0;
+    const requestHandler = () => {
+        const request = axios({
+            method: 'GET',
+            url: url
+        }).then((res) => {
+            console.log('requestCount:', requestCount);
+            const translateRes = {
+                zh: obj.word,
+                en: res.data.sentences[0].trans,
+                key: getKeyByWord(res.data.sentences[0].trans)
+            };
+            translateCache[obj.word] = translateRes;
+            return translateRes;
+        }).catch((err) => {
+            console.log('err:', err);
         });
-    });
-}
+        return request;
+    }
+
+    if (promiseCount > 0) {
+        return new Promise((resolve) => {
+            promiseCount ++;
+            const timeout = 2000 * promiseCount;
+            setTimeout(() => {
+                resolve();
+            }, timeout);
+        }).then(() => {
+            if (translateCache[obj.word]) {
+                return Promise.resolve(translateCache[obj.word]);
+            }
+            return requestHandler();
+        })
+    } else {
+        return requestHandler();
+    }
+
+    // return axios({
+    //     method: 'GET',
+    //     url: url
+	// }).then((res) => {
+    //     return {
+    //         zh: obj.word,
+    //         en: res.data.sentences[0].trans,
+    //         key: getKeyByWord(res.data.sentences[0].trans)
+    //     };
+	// }).catch((err) => {
+    //     console.log('err:', err);
+    // });
+};
 
 /**
  * 解析文本内容。返回一下分割后来数组，和目标代码的数组索引。
@@ -96,7 +142,6 @@ function textParser(pendingText, reg){
         }
         collection.push(pendingText.slice(lastIndex, pendingText.length));
     }
-    console.log('pendingText:', pendingText.substring(lastIndex, pendingText.length - 1));
     return {
         codeArr: collection,
         indexArr: searchTxtIndex
@@ -239,7 +284,8 @@ function main() {
                 const code = codeArr.join('');
                 return writeFile(path, code)
             }));
-        } else {
+        // 是否有启用翻译的注释标识
+        } else if (CONFIG.isEnableReg.test(originCode)){
             fileTaskList.push(
                 translater('script', originCode).then((obj) => {
                     const code = obj.code;
@@ -252,8 +298,9 @@ function main() {
 
     Promise.all(fileTaskList).then(() => {
         const output = removeRepeat(translateStorage);
+        // const timestamp = String(new Date().getTime());
         writeFile(
-            path.join(__dirname, './translateStorage.json'),
+            path.join(__dirname, `./translateStorage.json`),
             JSON.stringify(output, null, output.length)
         ).then(() => {
             console.log('done!');
