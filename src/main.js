@@ -88,18 +88,6 @@ const translateRequest = function(obj) {
                 return request;
             });
         }
-
-        // return new Promise((resolve, reject) => {
-        //     setTimeout(() => {
-        //         requestCount ++;
-        //         console.log(requestCount);
-        //         resolve({
-        //             zh: obj.word,
-        //             en: '英文',
-        //             key: 'key'
-        //         });
-        //     }, CONFIG.time);
-        // });
     }
 
     if (promisePool.length > 0) {
@@ -108,36 +96,11 @@ const translateRequest = function(obj) {
         });
         promisePool.push(request);
         return request;
-        // return new Promise((resolve) => {
-        //     promiseCount ++;
-        //     const timeout = CONFIG.time * promiseCount;
-        //     setTimeout(() => {
-        //         resolve();
-        //     }, timeout);
-        // }).then(() => {
-        //     if (translateCache[obj.word]) {
-        //         return Promise.resolve(translateCache[obj.word]);
-        //     }
-        //     return requestHandler();
-        // })
     } else {
         const request = requestHandler();
         promisePool.push(request)
         return request;
     }
-
-    // return axios({
-    //     method: 'GET',
-    //     url: url
-	// }).then((res) => {
-    //     return {
-    //         zh: obj.word,
-    //         en: res.data.sentences[0].trans,
-    //         key: getKeyByWord(res.data.sentences[0].trans)
-    //     };
-	// }).catch((err) => {
-    //     console.log('err:', err);
-    // });
 };
 
 /**
