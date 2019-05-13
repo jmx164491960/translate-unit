@@ -12,7 +12,7 @@ const CONFIG = require('./config');
 const getKeyByWord = function(word) {
     const reg = /[^ ]+/g; // 去空格
     // 去标点符号
-    const symbolReg = /[\ |\~|\`|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\-|\_|\+|\=|\||\\|\[|\]|\{|\}|\;|\:|\"|\'|\,|\<|\.|\>|\/|\?\u3002|\uff1f|\uff01|\uff0c|\u3001|\uff1b|\uff1a|\u201c|\u201d|\u2018|\u2019|\uff08|\uff09|\u300a|\u300b|\u3008|\u3009|\u3010|\u3011|\u300e|\u300f|\u300c|\u300d|\ufe43|\ufe44|\u3014|\u3015|\u2026|\u2014|\uff5e|\ufe4f|\uffe5]/g;
+    const symbolReg = /[\~|\`|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\-|\_|\+|\=|\||\\|\[|\]|\{|\}|\;|\:|\"|\'|\,|\<|\.|\>|\/|\?\u3002|\uff1f|\uff01|\uff0c|\u3001|\uff1b|\uff1a|\u201c|\u201d|\u2018|\u2019|\uff08|\uff09|\u300a|\u300b|\u3008|\u3009|\u3010|\u3011|\u300e|\u300f|\u300c|\u300d|\ufe43|\ufe44|\u3014|\u3015|\u2026|\u2014|\uff5e|\ufe4f|\uffe5]/g;
     word = word.replace(symbolReg, '');
     const arr = word.match(reg);
     let result = '';
@@ -233,6 +233,35 @@ function translater(type, code) {
                     translateStorage
                 };
             });
+        // withoutLang
+        case 'withoutLang':
+        promiseList = codeArr.map((item, index) => {
+            // 非注释代码
+            if (indexArr.length === 0 || indexArr.indexOf(index) < 0) {
+                let res = textParser(item, chineseReg);
+
+                let promiseSubList = [];
+                res.indexArr.forEach((i) => {
+                    const word = res.codeArr[i].slice(1, res.codeArr[i].length - 1); // 去掉收尾的'号
+                    promiseSubList.push(translateRequest({word}).then((translate) => {
+                        res.codeArr[i] = `'${translate.key}'`;
+                        translateStorage.push(translate);
+                    }));
+                })
+                return Promise.all(promiseSubList).then(() => {
+                    return res.codeArr.join('');
+                })
+            } else {
+                return Promise.resolve(item);
+            }
+        });
+
+        return Promise.all(promiseList).then((arr) => {
+            return {
+                code: arr.join(''),
+                translateStorage
+            };
+        });
     }
 }
 
@@ -275,9 +304,18 @@ function main() {
                 return writeFile(path, code)
             }));
         // 是否有启用翻译的注释标识
-        } else if (CONFIG.isEnableReg.test(originCode)){
+        } else if (/executor.js/g.test(path)) {
+        // } else if (CONFIG.isEnableReg.test(originCode)){
             fileTaskList.push(
                 translater('script', originCode).then((obj) => {
+                    const code = obj.code;
+                    translateStorage = [...translateStorage, ...obj.translateStorage];
+                    return writeFile(path, code);
+                })
+            );
+        } else {
+            fileTaskList.push(
+                translater('withoutLang', originCode).then((obj) => {
                     const code = obj.code;
                     translateStorage = [...translateStorage, ...obj.translateStorage];
                     return writeFile(path, code);
