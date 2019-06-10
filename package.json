@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "node ./src/main",
     "build": "node ./src/main",
-    "remove-repeat": "node ./remove-repeat"
+    "remove-repeat": "node ./remove-repeat",
+    "split": "node ./split"
   },
   "repository": {
     "type": "git",
