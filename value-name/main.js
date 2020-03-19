@@ -34,7 +34,7 @@ const translateRequest = function(obj) {
 };
 
 function main() {
-    let data = fs.readFileSync('quick/parcelStateMap-chinese.js', 'utf8');
+    let data = fs.readFileSync('quick/example-chinese.js', 'utf8');
     // console.log(data);
     // data = data.filter((item) => item);
     chineseSchema = data.split(/\r\n/g);
@@ -45,7 +45,7 @@ function main() {
             value: arr[0]
         };
     });
-    let json = fs.readFileSync('quick/parcelStateMap.json', 'utf8');
+    let json = fs.readFileSync('quick/example.json', 'utf8');
     json = JSON.parse(json);
 
     let promiseList = [];
