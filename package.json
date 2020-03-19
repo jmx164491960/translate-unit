@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node ./src/main"
+    "dev": "node ./src/main",
+    "build": "node ./src/main",
+    "remove-repeat": "node ./remove-repeat",
+    "split": "node ./split"
   },
   "repository": {
     "type": "git",
@@ -19,6 +22,7 @@
   "homepage": "https://github.com/jmx164491960/translate-util#readme",
   "dependencies": {
     "axios": "^0.18.0",
+    "fse": "^4.0.1",
     "request": "^2.88.0"
   }
 }
